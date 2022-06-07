@@ -14,7 +14,8 @@ b <- a[2:4]
 plot(a, col='red', type='b')
 
 # Defining path to file
-setwd('/Users/rq.aita/Códigos/stats-hydro/files')
+# setwd('/Users/rq.aita/Códigos/stats-hydro/files')
+setwd('/home/ufpr/Documentos/GitHub/stats-hydro/files')
 
 # Loading file serie_anual.txt
 serie_anual <- read.csv('serie_anual.txt', sep='\t', header=FALSE)
@@ -47,7 +48,7 @@ ggplot(serie_anual) +
 
 # Histogram
 N  <- dim(serie_anual)[1]
-NC <- round(1 + 3.3 * log(N))  # Sturges
+NC <- round(1 + 3.3 * log10(N))  # Sturges
 ggplot(serie_anual) + 
   geom_histogram(aes(V2), bins=NC) + 
   labs(x=expression('Vazão (m'^3*'/s)'), y='Frequência Absoluta') +
