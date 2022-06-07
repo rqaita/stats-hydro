@@ -1,0 +1,123 @@
+---
+title: "Aula 2"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r}
+library(ggplot2)
+```
+
+## Assigning values
+
+```{r}
+x <- 4
+y <- 10
+z <- x + y
+```
+
+## Vector
+
+Beginning in `i = 1` (includes the last value of the range)
+
+```{r}
+a <- c(1, 2, 6, 10, 20, 30, 25, 100, 38, 120)
+b <- a[2:4]
+```
+
+## Plotting graphics
+
+```{r, fig.align='center'}
+plot(a, col='red', type='b')
+```
+
+Defining path to file
+
+```{r}
+setwd('/Users/rq.aita/Códigos/stats-hydro/files')
+# setwd('/home/ufpr/Documentos/GitHub/stats-hydro/files')
+```
+
+Loading file `serie_anual.txt`
+
+```{r}
+serie_anual <- read.csv('files/serie_anual.txt', sep='\t', header=FALSE)
+serie_anual
+```
+
+Extracting values from data frame
+
+```{r, fig.align='center'}
+vazao <- serie_anual$V2
+plot(vazao, type='l')
+```
+
+Plotting time series
+
+```{r, fig.align='center'}
+serie_temporal <- ts(vazao, start=1938, end=1999)
+plot(serie_temporal, type='l')
+
+anos <- serie_anual$V1
+plot(anos, vazao, type='l', col='blue')
+```
+
+## TO-DO
+
+Plot the following graphics:  
+1. bar  
+2. line  
+3. flow duration curve  
+4. histogram  
+
+### Line
+
+```{r, fig.align='center'}
+ggplot(serie_anual) + 
+  geom_line(aes(x=V1, y=V2)) + 
+  labs(x='Ano', y=expression('Vazão (m'^3*'/s)')) + 
+  theme_linedraw()
+```
+
+### Bar
+
+```{r, fig.align='center'}
+ggplot(serie_anual) + 
+  geom_col(aes(x=V1, y=V2)) + 
+  labs(x='Ano', y=expression('Vazão (m'^3*'/s)')) + 
+  theme_linedraw()
+```
+
+### Histogram
+
+```{r, fig.align='center'}
+N <- dim(serie_anual)[1] 
+NC <- round(1 + 3.3 * log10(N))  # Sturges
+ggplot(serie_anual) + 
+  geom_histogram(aes(V2), bins=NC) + 
+  labs(x=expression('Vazão (m'^3*'/s)'), y='Frequência Absoluta') +
+  theme_linedraw()
+```
+
+### Frequency polygon
+
+```{r, fig.align='center'}
+ggplot(serie_anual) + 
+  geom_freqpoly(aes(V2), bins=NC) + 
+  labs(x=expression('Vazão (m'^3*'/s)'), y='Frequência Absoluta') +
+  theme_linedraw()
+```
+
+### Flow duration curve
+
+```{r, fig.align='center'}
+vazao_decr <- sort(vazao, decreasing=TRUE) 
+N <- length(vazao_decr) 
+n <- c(1:N) 
+n_N <- n / N
+ggplot(serie_anual) + 
+  geom_line(aes(x=n_N*100, y=vazao_decr)) + 
+  labs(x='Permanência (%)', y=expression('Vazão (m'^3*'/s)')) +
+  theme_linedraw()
+```
