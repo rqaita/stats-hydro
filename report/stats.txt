@@ -1,0 +1,15 @@
+,Valor,Unidade
+Tamanho,89,-
+Média,1092.17,m3/s
+Desvio padrão,290.34,m3/s
+Variância,84299.78,m6/s2
+Primeiro quartil,906.0,m3/s
+Mediana,1076.0,m3/s
+Terceiro quartil,1219.0,m3/s
+Amplitude inter-quartil,313.0,m3/s
+Máximo,1910,m3/s
+Mínimo,344,m3/s
+Amplitude,1566,m3/s
+Coeficiente de variação,27.0,%
+Assimetria,0.419,-
+Curtose,0.623,-
