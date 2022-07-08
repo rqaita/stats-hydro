@@ -1,0 +1,36 @@
+MEMORIAL DE ATIVIDADES
+======================
+
+LEITURA DE DADOS
+----------------
+
+Bacia 1: dados da ANA
+- Fluv 65010000
+- Pluv 2549017
+
+Bacia 2: dados do CABra (ID 48)
+- Fluv 18460000
+- Pluv 18460000
+
+PREPARAÇÃO DOS DADOS
+--------------------
+
+Séries em escala:
+- Diária
+- Mensal
+- Anual
+
+CÁLCULO DAS ESTATÍSTICAS DESCRITIVAS
+------------------------------------
+
+GERAÇÃO DE GRÁFICOS
+-------------------
+
+ESCRITA DO RELATÓRIO
+--------------------
+
+- Discussão crítica comparando estatísticas desc
+
+
+
+
