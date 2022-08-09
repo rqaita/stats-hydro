@@ -1,0 +1,43 @@
+MEMORIAL DE ATIVIDADES
+======================
+
+LEITURA DE DADOS OK
+----------------
+
+Bacia 1: dados da ANA
+- Fluv 65010000 FAZENDINHA
+- Pluv 02549017 FAZENDINHA
+
+Bacia 2: dados do CABra (ID 48)
+- Fluv 18460000 BOA SORTE
+- Pluv 18460000 BOA SORTE
+
+PREPARAÇÃO DOS DADOS OK
+--------------------
+
+Séries em escala:
+- Diária
+- Mensal
+- Anual
+
+CÁLCULO DAS ESTATÍSTICAS DESCRITIVAS OK
+------------------------------------
+
+Séries em escala:
+- Diária
+- Mensal
+- Anual
+
+GERAÇÃO DE GRÁFICOS
+-------------------
+
+- Gráfico de dispersão (Q x P)
+- Histograma
+- Polígono de frequência
+- Box-plot (mensal)
+- Curva de permanência (vazão anual)
+
+ESCRITA DO RELATÓRIO
+--------------------
+
+- Discussão crítica comparando estatísticas descritivas
