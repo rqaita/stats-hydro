@@ -31,13 +31,25 @@ Séries em escala:
 GERAÇÃO DE GRÁFICOS
 -------------------
 
-- Gráfico de dispersão (Q x P)
-- Histograma
-- Polígono de frequência
-- Box-plot (mensal)
-- Curva de permanência (vazão anual)
+OK - Gráfico de dispersão (Q x P)
+OK - Histograma
+OK - Polígono de frequência
+OK - Box-plot (mensal)
+OK - Curva de permanência (vazão anual)
 
 ESCRITA DO RELATÓRIO
 --------------------
 
 - Discussão crítica comparando estatísticas descritivas
+
+DÚVIDAS
+-------
+
+- Gráfico de dispersão apenas em escala anual?
+- Unidade de precipitação é mm/dia?
+- O histograma deve ser apresentado diário e anual também?
+
+MELHORIAS
+---------
+
+- Usar colorbar no gráfico de dispersão para ter uma noção de quando é o ponto

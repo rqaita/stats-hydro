@@ -155,21 +155,5 @@ def activ_2_stats(file):
         desc_stats_mes.append(descriptive_stats(data))
         print("\n")
     
-    return desc_stats_ano, desc_stats_dia, desc_stats_mes, df, i, f
-
-
-#%%
-
-files = [
-    "flow_sjp.xlsx", "prec_sjp.xlsx",
-    "flow_xgu.xlsx", "prec_xgu.xlsx",
-]
-
-desc_serie = [
-    "Vazão SJP", "Precipitação SJP",
-    "Vazão XGU", "Precipitação XGU",
-]
-
-for file, title in zip(files, desc_serie):
-    print(title)
-    _, _, _, _, _, _ = activ_2_stats(file)
+    return (desc_stats_ano, desc_stats_dia, desc_stats_mes, i, f,
+        df_dia, df_mes, df_ano)

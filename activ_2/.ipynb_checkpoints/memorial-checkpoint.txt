@@ -1,18 +1,18 @@
 MEMORIAL DE ATIVIDADES
 ======================
 
-LEITURA DE DADOS
+LEITURA DE DADOS OK
 ----------------
 
 Bacia 1: dados da ANA
-- Fluv 65010000
-- Pluv 2549017
+- Fluv 65010000 FAZENDINHA
+- Pluv 02549017 FAZENDINHA
 
 Bacia 2: dados do CABra (ID 48)
-- Fluv 18460000
-- Pluv 18460000
+- Fluv 18460000 BOA SORTE
+- Pluv 18460000 BOA SORTE
 
-PREPARAÇÃO DOS DADOS
+PREPARAÇÃO DOS DADOS OK
 --------------------
 
 Séries em escala:
@@ -20,17 +20,36 @@ Séries em escala:
 - Mensal
 - Anual
 
-CÁLCULO DAS ESTATÍSTICAS DESCRITIVAS
+CÁLCULO DAS ESTATÍSTICAS DESCRITIVAS OK
 ------------------------------------
+
+Séries em escala:
+- Diária
+- Mensal
+- Anual
 
 GERAÇÃO DE GRÁFICOS
 -------------------
 
+OK - Gráfico de dispersão (Q x P)
+OK - Histograma
+OK - Polígono de frequência
+OK - Box-plot (mensal)
+OK - Curva de permanência (vazão anual)
+
 ESCRITA DO RELATÓRIO
 --------------------
 
-- Discussão crítica comparando estatísticas desc
+- Discussão crítica comparando estatísticas descritivas
 
+DÚVIDAS
+-------
 
+- Gráfico de dispersão apenas em escala anual?
+- Unidade de precipitação é mm/dia?
+- O histograma deve ser apresentado diário e anual também?
 
+MELHORIAS
+---------
 
+- Usar colorbar no gráfico de dispersão para ter uma noção de quando é o ponto
