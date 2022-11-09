@@ -4,13 +4,13 @@ MEMORIAL DE ATIVIDADES
 LEITURA DE DADOS OK
 ----------------
 
-Bacia 1: dados da ANA
+Bacia 1:
 - Fluv 65010000 FAZENDINHA
 - Pluv 02549017 FAZENDINHA
 
-Bacia 2: dados do CABra (ID 48)
-- Fluv 18460000 BOA SORTE
-- Pluv 18460000 BOA SORTE
+Bacia 2:
+- Fluv 50795000 TIRIRICA
+- Pluv 01238000 TIRIRICA
 
 PREPARAÇÃO DOS DADOS OK
 --------------------
