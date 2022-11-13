@@ -13,14 +13,14 @@ Desenvolver os seguintes itens:
 para cada série em escala anual. 
 • Intervalos de confiança sobre a média de cada série (No caso das 
 séries em escala mensal, gerar intervalos de confiança para cada mês). 
-• Definição de regressão linear simples considerando como variável 
+OK Definição de regressão linear simples considerando como variável 
 dependente a vazão média anual observada numa das estações selecionadas.
 No total são duas regressões.
-• Definir uma regressão linear múltipla (mais de duas variáveis 
+OK Definir uma regressão linear múltipla (mais de duas variáveis 
 independente) que tenha como variável dependente a vazão máxima anual 
 numa das estações selecionadas. 
-• Análise de frequência para as séries de vazão de máximos anuais para 
-períodos de retorno de 10,50 e 100 anos 
+OK Análise de frequência para as séries de vazão de máximos anuais para 
+períodos de retorno de 10, 50 e 100 anos 
 (Considerar o melhor ajuste de distribuição)
 
 Apresentar o trabalho em formato artigo com os seguintes elementos: 
@@ -39,7 +39,7 @@ from sklearn import linear_model
 plt.rcParams['figure.dpi'] = 300
 plt.rcParams['font.family'] = 'serif'
 plt.rcParams['font.sans-serif'] = ['Arial']
-salvar = True
+salvar = False
 
 
 def reg_linear(x, y):
@@ -136,7 +136,7 @@ df_fazendinha = pd.read_excel(
 
 # %% Análise de frequências - série de máximos anuais
 
-df = resample_data(df_tiririca['pluv'], tipo='max', escala='ano')
+df = resample_data(df_fazendinha['fluv'], tipo='max', escala='ano')
 df_sort = df.sort_values()
 
 ## Ajuste das distribuições
@@ -194,7 +194,7 @@ for nome, func, par in zip(dist_nome, dist_func, dist_par):
 ax.legend()
 ax.grid(axis='y')
 ax.set_ylabel("Vazão (m$^3$/s)")
-ax.set_xlabel("Frequência Acumulada")
+ax.set_xlabel("Tempo de Retorno (anos)")
 ax.set_xscale('log')
 ax.set_xlim([1, 100])
 if salvar:
@@ -248,9 +248,49 @@ if salvar:
 
 # %% Regressão linear múltipla
 
-# Definir uma regressão linear múltipla (mais de duas variáveis 
-# independente) que tenha como variável dependente a vazão máxima
-# anual numa das estações selecionadas. 
+# Variável dependente: Q máxima CAM
+dfy = resample_data(df_tiririca['fluv'], tipo='max', escala='ano')
+# Variável independente 1: P acumulada CAM
+dfx1 = resample_data(df_tiririca['pluv'], tipo='sum', escala='ano')
+# Variável independente 2: Q máxima SJP
+dfx2 = resample_data(df_fazendinha['fluv'], tipo='max', escala='ano')
+# Variável independente 3: P acumulada SJP
+dfx3 = resample_data(df_fazendinha['pluv'], tipo='sum', escala='ano')
+
+# Pegando período com dados em comum
+df = pd.DataFrame(dfy).rename(columns={'fluv':'CAM_Q'})
+df['CAM_P'] = dfx1
+df['SJP_Q'] = dfx2
+df['SJP_P'] = dfx3
+df = df.dropna()
+
+# Organizando dados
+x = df.iloc[:, 1:].to_numpy()
+y = df['CAM_Q'].to_numpy()
+
+# Fitting the regression
+reg = linear_model.LinearRegression()
+reg.fit(x, y)
+coef = reg.coef_
+intercept = reg.intercept_
+r2 = reg.score(x, y)
+
+
+# %% Testes de hipótese
+# Testes de hipótese de estacionariedade, independência e homogeneidade
+
+df = resample_data(df_fazendinha['fluv'], tipo='sum', escala='ano')
 
 
 
+## Estacionariedade
+
+
+
+## Independência
+
+
+
+## Homogeneidade
+
+# %%
