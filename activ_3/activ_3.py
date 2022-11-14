@@ -9,7 +9,7 @@ temporais médias em escala diária, mensal e anual para cada estação.
 As séries selecionadas devem ter no mínimo 30 anos de extensão sem falhas.
 
 Desenvolver os seguintes itens:
-• Testes de hipótese de estacionariedade, independência e homogeneidade
+OK Testes de hipótese de estacionariedade, independência e homogeneidade
 para cada série em escala anual. 
 • Intervalos de confiança sobre a média de cada série (No caso das 
 séries em escala mensal, gerar intervalos de confiança para cada mês). 
@@ -120,6 +120,38 @@ def resample_data(df, tipo, escala):
     return df_resampled
 
 
+def IC_media(df):
+    """Calcula o intervalo de confiança da média populacional, para
+    o caso onde não se tem a variância populacional.
+
+    Entrada
+    =======
+    df
+    
+    Saída
+    =====
+    int_inf
+    int_sup
+       
+    """
+
+    # Supondo população normal, conforme não rejeitado por KS, tem-se:
+    # - Se a variância populacional não é conhecida:
+    std_amostral = df.std()
+    media_amostral = df.mean()
+    N = df.size
+    nu = N - 1
+    t = abs(stats.t.ppf(0.025, nu))
+
+    # Função pivô
+    int_inf = media_amostral - t * std_amostral / np.sqrt(N)
+    int_sup = media_amostral + t * std_amostral / np.sqrt(N)
+
+    print(int_inf.round(2), '< média <', int_sup.round(2))
+
+    return (int_inf, int_sup)
+
+
 # %% Leitura de dados
 
 # Estação Tiririca - Camaçari/BA
@@ -138,37 +170,39 @@ df_fazendinha = pd.read_excel(
 
 df = resample_data(df_fazendinha['fluv'], tipo='max', escala='ano')
 df_sort = df.sort_values()
+salvar = True
 
 ## Ajuste das distribuições
 # Funções
 dist_func = [
     stats.gumbel_r,
-    stats.expon,
+    # stats.expon,
     stats.norm,
     stats.lognorm,
-    stats.pearson3,
     stats.pearson3,
     stats.genextreme,
 ]
 # Nome da distribuição
 dist_nome = [
     "Gumbel",
-    "Exponencial",
+    # "Exponencial",
     "Normal",
     "Log normal",
     "Person 3",
-    "Log Person 3",
     "GEV",
 ]
 # Parâmetros por MMV
 dist_par = [func.fit(df) for func in dist_func]
 # Empirical distribution - Weibull pp
 emp_cdf = stats.mstats.plotting_positions(df_sort, alpha=0, beta=0)
+# Auxiliar milenar
+tr = np.linspace(0.1, 101, 1000)
 
 ## Gráfico - Q x Freq
 fig, ax = plt.subplots(constrained_layout=True, figsize=(8, 4))
 # Empirical distribution - Weibull pp
-ax.scatter(df_sort, emp_cdf, label="Empírica", marker='.')
+ax.scatter(df_sort, emp_cdf, label="Empírica", marker='.', color='purple')
+
 # Fitted distributions
 for nome, func, par in zip(dist_nome, dist_func, dist_par):
     ax.plot(df_sort, func.cdf(df_sort, *par), label=nome)
@@ -179,17 +213,17 @@ ax.set_xlabel("Vazão (m$^3$/s)")
 ax.set_ylabel("Frequência Acumulada")
 if salvar:
     fig.savefig(
-        'figures/QxFreq_' + 'CAM' + '.png',
+        'figures/QxFreq_' + 'SJP' + '.png',
         format='png', dpi=300,
     )
 
 ## Gráfico - Q x TR (log)
 fig, ax = plt.subplots(constrained_layout=True, figsize=(8, 4))
 # Empirical distribution - Weibull pp
-ax.scatter(1/(1-emp_cdf), df_sort, label="Empírica", marker='.')
+ax.scatter(1/(1-emp_cdf), df_sort, label="Empírica", marker='.', color='purple')
 # Fitted distributions
 for nome, func, par in zip(dist_nome, dist_func, dist_par):
-    ax.plot(1/(1 - func.cdf(df_sort, *par)), df_sort, label=nome)
+    ax.plot(tr, func.ppf(1-1/tr, *par), label=nome)
 # General settings
 ax.legend()
 ax.grid(axis='y')
@@ -197,9 +231,10 @@ ax.set_ylabel("Vazão (m$^3$/s)")
 ax.set_xlabel("Tempo de Retorno (anos)")
 ax.set_xscale('log')
 ax.set_xlim([1, 100])
+ax.set_ylim([1, 30])
 if salvar:
     fig.savefig(
-        'figures/QxTR_' + 'CAM' + '.png',
+        'figures/QxTR_' + 'SJP' + '.png',
         format='png', dpi=300,
     )
 
@@ -217,34 +252,46 @@ for nome, func, par in zip(dist_nome, dist_func, dist_par):
 
 # %% Regressão linear simples - vazão média anual
 
-df_pluv = resample_data(df_tiririca['pluv'], tipo='sum', escala='ano')
-df_fluv = resample_data(df_tiririca['fluv'], tipo='med', escala='ano')
+df_pluv = [
+    resample_data(df_fazendinha['pluv'], tipo='sum', escala='ano'),
+    resample_data(df_tiririca['pluv'], tipo='sum', escala='ano'),
+]
+df_fluv = [
+    resample_data(df_fazendinha['fluv'], tipo='med', escala='ano'),
+    resample_data(df_tiririca['fluv'], tipo='med', escala='ano'),
+]
+salvar = True
 
+fig, ax = plt.subplots(1, 2, constrained_layout=True, figsize=(8, 4))
+
+for i in range(2):
 
 ## Método dos mínimos quadrados
+    a, b, R2 = reg_linear(x=df_pluv[i].to_numpy(), y=df_fluv[i].to_numpy())
+    x = np.arange(df_pluv[i].min(), df_pluv[i].max())
+    y = a * x + b
 
-a, b, R2 = reg_linear(x=df_pluv.to_numpy(), y=df_fluv.to_numpy())
-x = np.arange(df_pluv.min(), df_pluv.max())
-y = a * x + b
+    # Medições
+    ax[i].scatter(df_pluv[i], df_fluv[i], label="Medições", marker='.')
+    # Ajuste
+    ax[i].plot(
+        x, y, 
+        label="Ajuste (R²=" + str(R2.round(3)) + ')', 
+        color="gray", linestyle="--",
+    )
+    # General settings
+    ax[i].legend()
+    ax[i].set_xlabel("Precipitação (mm)")
+    ax[i].set_ylabel("Vazão (m$^3$/s)")
 
-fig, ax = plt.subplots(constrained_layout=True)
-# Medições
-ax.scatter(df_pluv, df_fluv, label="Medições")
-# Ajuste
-ax.plot(
-    x, y, 
-    label="Ajuste (R²=" + str(R2.round(3)) + ')', 
-    color="gray", linestyle="--",
-)
-# General settings
-ax.legend()
-ax.set_xlabel("Precipitação (mm)")
-ax.set_ylabel("Vazão (m$^3$/s)")
+ax[0].set_title('Estação SJP')
+ax[1].set_title('Estação CAM')
 if salvar:
     fig.savefig(
-        'figures/RLS_' + 'CAM' + '.png',
+        'figures/RLS.png',
         format='png', dpi=300,
     )
+
 
 # %% Regressão linear múltipla
 
@@ -276,21 +323,59 @@ intercept = reg.intercept_
 r2 = reg.score(x, y)
 
 
-# %% Testes de hipótese
+# %% Testes de hipótese - feito no R
 # Testes de hipótese de estacionariedade, independência e homogeneidade
+# Preparação dos dados
 
-df = resample_data(df_fazendinha['fluv'], tipo='sum', escala='ano')
+df = resample_data(df_fazendinha['pluv'], tipo='sum', escala='ano')
+df.index = df.index.year
+df.to_csv('SJP_pluv.csv', sep='\t')
+
+df = resample_data(df_fazendinha['fluv'], tipo='max', escala='ano')
+df.index = df.index.year
+df.to_csv('SJP_fluv.csv', sep='\t')
+
+df = resample_data(df_tiririca['pluv'], tipo='sum', escala='ano')
+df.index = df.index.year
+df.to_csv('CAM_pluv.csv', sep='\t')
+
+df = resample_data(df_tiririca['fluv'], tipo='max', escala='ano')
+df.index = df.index.year
+df.to_csv('CAM_fluv.csv', sep='\t')
 
 
+# %% Intervalo de confiança - média populacional
 
-## Estacionariedade
+# df = resample_data(df_fazendinha['fluv'], tipo='med', escala='ano')
+df = df_fazendinha['fluv']
+IC = {}
+IC[''] = IC_media(df)
+pd.DataFrame(IC).to_clipboard()
 
+df = resample_data(df_tiririca['fluv'], tipo='med', escala='ano')
+# df = df_tiririca['fluv']
+IC = {}
+IC[''] = IC_media(df)
+pd.DataFrame(IC).to_clipboard()
 
+df = resample_data(df_fazendinha['fluv'], tipo='med', escala='mes')
+df_mes = {}
+for m in range(1, 13):
+    x = df[df.index.month == m]
+    df_mes[m] = x.values
+df = pd.DataFrame(df_mes)
+IC = {}
+for m in range(1, 13):
+    IC[m] = IC_media(df[m])
+pd.DataFrame(IC).to_clipboard()
 
-## Independência
-
-
-
-## Homogeneidade
-
-# %%
+df = resample_data(df_tiririca['fluv'], tipo='med', escala='mes')
+df_mes = {}
+for m in range(1, 13):
+    x = df[df.index.month == m]
+    df_mes[m] = x.values
+df = pd.DataFrame(df_mes)
+IC = {}
+for m in range(1, 13):
+    IC[m] = IC_media(df[m])
+pd.DataFrame(IC).to_clipboard()
