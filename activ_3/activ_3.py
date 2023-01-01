@@ -321,7 +321,9 @@ reg.fit(x, y)
 coef = reg.coef_
 intercept = reg.intercept_
 r2 = reg.score(x, y)
-
+print('R2 =', r2)
+print('Coeficientes =', coef)
+print('Intercepto =', intercept)
 
 # %% Testes de hipótese - feito no R
 # Testes de hipótese de estacionariedade, independência e homogeneidade
